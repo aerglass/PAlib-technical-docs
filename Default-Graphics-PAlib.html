@@ -1,0 +1,25 @@
+<html>
+<body>
+	<h1> PAlib technical Info </h1>
+	<a href="index.html"> index </a><br>
+	<h1>How the hell do PAlib's built in graphics work?</h1>
+    That is actually a good question, we can get a answer thanks to PAlib's source code (yeah it is open-source)<br>
+    The first bmp files we find are called keyboard.bmp and keyboard1.bmp, there was a file called gfx2gba (i think <a href="PAGfx.html">PAGfx</a> is gfx2gba renamed).<br>
+    <img src="Default-Graphics/It uses Gfx2Gba.png">
+    The second bitmap is a font, it uses <a href="PAGfx.html">PAGfx</a> for some reason.<br>
+    <img src="Default-Graphics/Proof that it uses PAGfx2.png">
+    The third is a transition BG, it also uses <a href="PAGfx.html">PAGfx</a>.<br>
+    <img src="Default-Graphics/Proof that uses PAGfx1.png">
+    The fourth and final of the day is the Tiled Font, it also uses <a href="PAGfx.html">PAGfx</a>, just like the second one...</p>
+	
+    So it uses <a href="PAGfx.html">PAGfx</a> and gfx2gba.<br>
+    Okay, now it works by integrating the font directly into source and then you can load it up into PAlib.<br>
+
+    <h1>Disvantagues of this</h1>
+    <strong>It uses more RAM as it is always loaded into memory, you can't put the font into NITROFS because it does not work that.</strong></p>
+    <strong>Even if you unload the font it is still into memory.</strong></p>
+
+    <h1>Advantagues of this</h1>
+    You do not have to load any font into memory to make a font hello world, in NFlib you have to load a font first.
+    </body>
+	</html>
