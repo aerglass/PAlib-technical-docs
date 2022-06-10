@@ -12,7 +12,7 @@
 	<h1> This is how PAGfx works. </h1><br>
 	First of all it dectects a file called "PAGfx.ini", it contains the directory of the files and the configuration itself.<br>
 	Next it creates a file called "all_gfx.h", it contains all the image definitions. For older PAGfx versions it creates also a all_gfx.c file.</p>
-	For each image PAGfx creates a C file with the name of the image that was converted. It contains some definitions.</p>
+	PAGfx converts each image to .bin format and then creates a C file for each image containing definitions about the image, like the bgtype, the width, the height and so on.</p>
 	for Backgrounds it creates a <a href="PABgStruct.html"> PA_BgStruct </a> struct and defines everything.<br>
 	for sprites it creates a C file containing the variables needed for the PAlib.</p>
 
