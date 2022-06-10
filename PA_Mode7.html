@@ -1,0 +1,62 @@
+<html>
+<body>
+	<h1> PAlib technical Info </h1>
+	<a href="index.html"> index </a><br>
+  <h1> PAlib Mode7 </h1>
+  Mode7 is a way to faking 3D, it works by scaling and moving a background until it has depth.
+  it is horribly bad and it was considered bloat, I do not know exactly which games use this but yeah. This won't ever
+  be implemented in PA2lib unless anybody else is willing to take the risks of the library being called bloatware.</p>
+  
+  <h1>How does PA_Mode7 work?</h1></p>
+  It looks pretty complicated but it is not, you don't actually use it.<br>
+okay i lied.</p>
+  some things that i found about was the PA_Mode7 was just fancy VBL stuff. Would I say easier? no lol. it look horribly bad and involves a bit of setup,
+most of which you won't ever use.<br><br>
+
+Here is proof that it is fancy VBL/IRQ stuff<br>
+<code>
+  
+void PA_InitMode7(u8 bg_select) {<br>
+	mode7cam_x = X0; mode7cam_y = Y0; mode7cam_z = Z0;<br>
+	mode7alpha = 0;<br>
+	mode7cos = 256; mode7sin = 0;	// temporaries for cos and sin alpha<br>
+	mode7_distance = 160;<br>
+//PA_StartInt(INT_HBLANK, hbl_mode7);<br>
+	irqSet(IRQ_HBLANK, hbl_mode7);<br>
+	irqEnable(IRQ_HBLANK);<br>
+}
+</code><br>
+now lets see hbl_mode7<br>
+<code>
+  void hbl_mode7(void) {<br>
+	u8 screen = 0;<br>
+	u8 bg = 3;<br>
+	s32 ww, wcc, wss, wxr, wyr;<br>
+//	ww= (mode7cam_y*DIV[REG_VCOUNT])>>12;		// .8*.16 /.12 = 20.12<br>
+	s16 vc = REG_VCOUNT;<br>
+<br>
+	if (vc > 192) vc = 0;<br>
+<br>
+	ww = (mode7cam_y << 4) / (vc + 1);		// .8*.16 /.12 = 20.12<br>
+	wcc = ww * mode7cos >> 5;					// .12*.8 /.5 = 17.15<br>
+	wss = ww * mode7sin >> 5;					// .12*.8 /.5 = 17.15<br>
+	// NOTE: when you do P * q0<br>
+	// - for x-offset (q0_x): >>7, then *120<br>
+	// - for y-offset (q0_y): *160, then >>7<br>
+	// Bad things happen if you don't.<br>
+	// horizontal scale and offset<br>
+	wxr = 128 * (wcc >> 7);				// .8<br>
+	wyr = (mode7_distance * wss) >> 7;				// .8<br>
+	PA_BGXPA(screen, bg) = wcc >> 7;<br>
+	PA_BGXX(screen, bg) = mode7cam_x - wxr + wyr;<br>
+	// vertical scale and offset<br>
+	wxr = 128 * (wss >> 7);				// .8<br>
+	wyr = (mode7_distance * wcc) >> 7;				// .8<br>
+	PA_BGXPC(screen, bg) = wss >> 7;<br>
+	PA_BGXY(screen, bg) = mode7cam_z - wxr - wyr;<br>
+	// REG_IF = INT_HBLANK;		// cleared by isr switchblock<br>
+}
+</code>
+this is a ton loads more complicated but yeah, its just vbl stuff
+  </body>
+	</html>
