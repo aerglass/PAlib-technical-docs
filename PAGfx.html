@@ -6,7 +6,9 @@
 	PAGfx is a tool used for converting graphics to be able to be used with PAlib. Or basically it converts the graphics to a format that the Nintendo DS can use. It is basically grit renamed with more source<br>
 	<h1> The PAGC frontend </h1>
 	The PAGc frontend is a UI for PAGfx that sets up the config file for convertion, it allow you to select the files. </p>
-	<h1> You can use PAGfx on libnds but it is not recomended as it may cause corrupt graphics </h1>
+	<h1> You can use PAGfx on libnds but it is not recomended as it may cause corrupt graphics </h1></p>
+	In June 1 I was able to use PAGfx under libnds perfectly without any issues, but it took a while because well, its not designed to work on libnds or even modern
+	devkitarm at all, after this i am gonna steal dsgm source to see how the hell can i load a tiledbg off ram instead of nitrofs without messing up NFlib code. problably will end up on a entire rewrite.
 	<h1> This is how PAGfx works. </h1><br>
 	First of all it dectects a file called "PAGfx.ini", it contains the directory of the files and the configuration itself.<br>
 	Next it creates a file called "all_gfx.h", it contains all the image definitions. For older PAGfx versions it creates also a all_gfx.c file.</p>
