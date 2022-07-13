@@ -1,0 +1,70 @@
+  <html>
+<body>
+	<h1> PAlib technical Info </h1>
+	<a href="index.html"> index </a><br>
+	<h1> PA_TransBg </h1>
+  yeah im going insane.<br><br>
+  
+
+if you ask me "how does PAlib bg transition stuff work?" I would normally respond "its just bg tilemap changing and that is it" but today i am gonna explain it all.<br><br>
+
+PAlib integrates some image called "PA_TransBg.png" and it has all the types of bgs that PAlib uses. <br>
+It converts it using PAGfx and it is integrated onto the main lib.<br><br>
+
+onto the file (palib1007directory/source/PA_BgTrans.c there is the source for transbg i guess.<br>
+<code>	
+#include <PA9.h><br>
+#include "TransBg/all_gfx.h"<br>
+u8 pa_bg_trans[2];<br>
+<br>
+void PA_InitBgTransEx(u8 screen, u8 bg) {<br>
+    pa_bg_trans[screen] = bg;<br>
+    PA_LoadBackground(screen, bg, &PA_TransBg);<br>
+    PA_BgTransUpDown(screen, 0, 0, TRANS_LENGTH); // Hide<br>
+}<br>
+  </code><br>
+
+whatever that files include the all_gfx of transbg which means that the transformed bg is being used.<br>
+<code>
+		void PA_BgTransTile(u8 screen, u16 type, s16 x, s16 y, s16 temptile) {<br>
+    u16* map = (u16*) PA_TransBg.BgMap;<br>
+    PA_SetMapTileAll(screen, pa_bg_trans[screen], x, y, map[temptile*2+type]);<br>
+    PA_SetMapTileAll(screen, pa_bg_trans[screen], x + 1, y, map[temptile*2+1+type]);<br>
+    PA_SetMapTileAll(screen, pa_bg_trans[screen], x, y + 1, map[temptile*2+32+type]);<br>
+    PA_SetMapTileAll(screen, pa_bg_trans[screen], x + 1, y + 1, map[temptile*2+1+32+type]);<br>
+}<br>
+
+void PA_BgTransUpDown(u8 screen, u16 type, u8 vflip, s16 state) {<br>
+    int i, j;<br>
+    s16 tile = state >> 1;<br>
+    s16 temptile;<br>
+    int y;<br>
+    type = type << 6;<br>
+    int x;<br>
+
+    for (j = 0; j < 12; j++) {<br>
+        y = j * 2;<br>
+<br>
+        if (vflip) y = (11 - j) * 2;<br>
+
+        temptile = tile;<br>
+
+        if (temptile > 15) temptile = 15; // limit range...<br>
+
+        for (i = 0; i < 16; i++) {<br>
+            x = i * 2;<br>
+            PA_BgTransTile(screen, type, x, y, temptile);<br>
+        }<br>
+
+        if (tile) tile--;<br>
+    }<br>
+}<br>
+</code>
+	
+If you know full libnds and PAlib then you understand, if you do not then basically, PA_BgTransTile is PA_SetMapTile which is modifying the current bg map.<br>
+PA_BgTransUpDown basically uses that function to swap the current tiles, to a certain velocity so that it becomes a transation.<br> 
+  there you go, if you don't understand or think that what i am saying is wrong please say it to me, i am not the best at explaining things.
+
+
+	</body>
+	</html>
